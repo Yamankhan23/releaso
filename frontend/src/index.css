@@ -1,0 +1,41 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@keyframes fadeSlide {
+  0% {
+    opacity: 0;
+    transform: translate(-20px, -50%);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translate(0px, -50%);
+  }
+}
+
+@layer base {
+  html {
+    @apply bg-[#F8F9FA] text-[#344C3D];
+  }
+
+  html.dark {
+    @apply bg-[#0D1117] text-[#E5E7EB];
+  }
+
+  .surface {
+    @apply bg-white dark:bg-[#161B22] transition;
+  }
+
+  .text-primary {
+    @apply text-[#344C3D] dark:text-[#E5E7EB];
+  }
+
+  .text-secondary {
+    @apply text-[#6C7A78] dark:text-[#9CA3AF];
+  }
+
+  .accent {
+    @apply text-[#344C3D] dark:text-[#4ADE80];
+  }
+}
