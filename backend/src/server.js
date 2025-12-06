@@ -10,47 +10,61 @@ const errorHandler = require('./middlewares/error.middleware');
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./docs/swagger');
 
-const PORT = process.env.PORT || 5000;
-
 const app = express();
 
-// connect db
 connectDB();
 
-// security middlewares
+app.set("trust proxy", 1);
+
 app.use(helmet());
 
-app.use(cors({
-    origin: [
-        "http://localhost:5173",
-        "http://localhost:5174",
-        "http://localhost:3000",
-        "http://localhost:4173",
-        "http://127.0.0.1:5173"
-    ],
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true
-}));
+const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(",") || [];
+
+app.use(
+    cors({
+        origin: function (origin, callback) {
+            if (!origin) return callback(null, true);
+
+            if (allowedOrigins.includes(origin)) {
+                return callback(null, true);
+            } else {
+                return callback(new Error(`CORS blocked for: ${origin}`));
+            }
+        },
+        credentials: true,
+        methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+        allowedHeaders: ["Content-Type", "Authorization"]
+    })
+);
 
 app.use(express.json());
 app.use(morgan('dev'));
 
 const limiter = rateLimit({
     windowMs: 1 * 60 * 1000,
-    max: 100
+    max: 100,
+    message: "Too many requests. Please try again in a minute."
 });
 app.use(limiter);
 
-// routes & docs
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+if (process.env.NODE_ENV !== "production") {
+    app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+}
+
 app.use('/api/v1', routes);
 
-// health
 app.get('/health', (req, res) => res.json({ ok: true, ts: Date.now() }));
 
-// global error handler
+app.use((req, res) => {
+    res.status(404).json({
+        success: false,
+        message: "Route Not Found",
+    });
+});
+
 app.use(errorHandler);
+
+const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
