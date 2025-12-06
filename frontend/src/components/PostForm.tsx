@@ -107,7 +107,7 @@ interface PostFormProps {
 
 export default function PostForm({ close, refresh, initial }: PostFormProps) {
     const [title, setTitle] = useState(initial?.title || "");
-    const [content, setContent] = useState(initial?.description || "");
+    const [content, setContent] = useState(initial?.content || "");
     const [scheduledAt, setScheduledAt] = useState(
         initial?.scheduledAt
             ? new Date(initial.scheduledAt).toISOString().slice(0, 16)
@@ -120,10 +120,11 @@ export default function PostForm({ close, refresh, initial }: PostFormProps) {
         e.preventDefault();
         const payload = {
             title,
-            description: content, // <-- correct key for backend
+            content,
             status: initial?.status || "draft",
             scheduledAt: scheduledAt || null
         };
+
 
         try {
             if (isEdit) {
@@ -180,7 +181,7 @@ export default function PostForm({ close, refresh, initial }: PostFormProps) {
                     </div>
 
                     <div>
-                        <label className="text-xs text-gray-500 font-medium">Schedule (optional)</label>
+                        <label className="text-xs text-gray-500 font-medium">Schedule</label>
                         <input
                             type="datetime-local"
                             value={scheduledAt}

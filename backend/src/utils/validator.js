@@ -16,7 +16,7 @@ const postCreateSchema = Joi.object({
     content: Joi.string().allow('').optional(),
     platform: Joi.string().optional(),
     status: Joi.string().valid('draft', 'scheduled', 'posted').optional(),
-    scheduledAt: Joi.date().optional(),
+    scheduledAt: Joi.date().allow(null).optional(),
     metadata: Joi.object().optional()
 });
 
