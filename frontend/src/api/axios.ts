@@ -1,7 +1,8 @@
 import axios from "axios";
 
 const API = axios.create({
-    baseURL: "https://releaso.vercel.app/api/v1", // change if deployed
+    // baseURL: "https://releaso.vercel.app/api/v1", // change if deployed
+    baseURL: "http://localhost:5000/api/v1",
 });
 
 // attaches token automatically if exists
