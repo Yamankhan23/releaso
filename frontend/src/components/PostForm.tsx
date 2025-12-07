@@ -201,6 +201,7 @@ export default function PostForm({ close, refresh, initial }: PostFormProps) {
 
                         <button
                             type="submit"
+                            onClick={() => close ? close() : navigate("/app/posts")}
                             className="px-5 py-2 bg-gray-900 text-white rounded-lg font-medium hover:bg-gray-800 transition active:scale-95"
                         >
                             Save
